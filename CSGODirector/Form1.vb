@@ -1,34 +1,38 @@
-﻿Imports CSGSI
+﻿Imports System.Runtime.InteropServices
+Imports CSGSI
 
-Public Class Form1
+Public Class CSGODirector
     Dim WithEvents GSL As New GameStateListener(3550)
     Dim CSGOMaximized As Boolean
-    Dim counter As Integer = 0
-    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Private Sub CSGODirector_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         GSL.Start()
+
+        Me.Width = Screen.PrimaryScreen.Bounds.Width
+        Me.Height = Screen.PrimaryScreen.Bounds.Height
+
+        Me.Location = New Point(0, 0)
+        PanelSettings.Location = New Point(-225, 0)
     End Sub
 
     Private Sub OnNewGameState(gs As GameState) Handles GSL.NewGameState
         Try
-            If CheckBox1.Checked Then
+            If rbDirector.Checked Then
 
                 If gs.Round.Phase = Nodes.RoundPhase.FreezeTime OrElse gs.Round.Phase = Nodes.RoundPhase.Over Then
-                    If CSGOMaximized AndAlso counter = NumericUpDown1.Value Then
-                        MaximizeWindow("chrome")
-                        MaximizeWindow("firefox")
-                        MaximizeWindow("vlc")
-
+                    If CSGOMaximized Then
+                        BackColor = Color.DimGray
+                        WebBrowser1.Visible = True
+                        Me.Opacity = 1
                         SetCursorPos(0, 0)
                         CSGOMaximized = False
                     End If
-
-                    counter += 1
                 End If
 
                 If gs.Round.Phase = Nodes.RoundPhase.Live AndAlso CSGOMaximized = False Then
-                    MaximizeWindow("csgo")
+                    BackColor = Color.DarkGray
+                    WebBrowser1.Visible = False
+                    Me.Opacity = 0.5
                     CSGOMaximized = True
-                    counter = 0
                 End If
             End If
         Catch e As Exception
@@ -36,36 +40,40 @@ Public Class Form1
         End Try
     End Sub
 
-    Private Sub MaximizeWindow(ByVal procName As String)
-        Dim procArray() As System.Diagnostics.Process = System.Diagnostics.Process.GetProcessesByName(procName)
-        If procArray.Length > 0 Then
-            Dim i As Integer = 0
-            For i = 0 To procArray.Length - 1
-                If Not procArray(i).MainWindowTitle = "" Then ShowPreviousInstance(procArray(i).MainWindowHandle)
-            Next
+    Private Declare Function SetCursorPos Lib "user32" (ByVal X As Integer, ByVal Y As Integer) As Integer
+
+    Private Sub btnClose_Click(sender As Object, e As EventArgs) Handles btnClose.Click
+        Me.Close()
+        End
+    End Sub
+
+    Private Sub SettingsExpander_Click(sender As Object, e As EventArgs) Handles SettingsExpander.Click
+        If PanelSettings.Location.X = 0 Then
+            PanelSettings.Location = New Point(-225, 0)
+            SettingsExpander.Text = ">"
+        Else
+            PanelSettings.Location = New Point(0, 0)
+            SettingsExpander.Text = "<"
         End If
     End Sub
 
-    Private SW_RESTORE As Integer = 9
-    Private Declare Auto Function IsIconic Lib "user32" (ByVal hWnd As IntPtr) As Boolean
-    Private Declare Auto Function SetForegroundWindow Lib "user32" (ByVal hwnd As IntPtr) As Long
-    Private Declare Auto Function ShowWindow Lib "user32" (ByVal hWnd As IntPtr, ByVal nCmdShow As Integer) As IntPtr
-
-    Private Declare Function SetCursorPos Lib "user32" (ByVal X As Integer, ByVal Y As Integer) As Integer
-
-    Private Function ShowPreviousInstance(ByVal handle As IntPtr) As Boolean
-        If handle.ToInt32 <> IntPtr.Zero.ToInt32 Then
-            Try
-                If IsIconic(handle) Then
-                    ShowWindow(handle, SW_RESTORE)
-                End If
-                SetForegroundWindow(handle)
-                ShowPreviousInstance = True
-            Catch ex As System.Exception
-                ShowPreviousInstance = False
-            End Try
-        Else
-            ShowPreviousInstance = False
+    Private Sub rbStream_CheckedChanged(sender As Object, e As EventArgs) Handles rbStream.CheckedChanged
+        If rbStream.Checked Then
+            WebBrowser1.Visible = True
+            Me.Opacity = 1
+            BackColor = Color.DimGray
         End If
-    End Function
+    End Sub
+
+    Private Sub rbGame_CheckedChanged(sender As Object, e As EventArgs) Handles rbGame.CheckedChanged
+        If rbGame.Checked Then
+            WebBrowser1.Visible = False
+            Me.Opacity = 0.5
+            BackColor = Color.DarkGray
+        End If
+    End Sub
+
+    Private Sub btnStreamURL_Click(sender As Object, e As EventArgs) Handles btnStreamURL.Click
+        InputForm.ShowDialog()
+    End Sub
 End Class
