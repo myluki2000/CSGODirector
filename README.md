@@ -1,26 +1,22 @@
-###CSGODirector
-CSGODirector allows you to automatically switch between a window of the twitch stream and the ingame GOTV stream inbetween rounds, so you can see players, the crowd...
-###HOW TO USE
-1. Copy the "gamestate_integration_CSGODirector.cfg"-file into your CSGO cfg folder
+##CSGODirector
+I created a little program which will automatically detect when the round is over and overlay a webbrowser with the twitch stream which allows you to enjoy the improved quality of GOTV, but still see players' and the crowd's reaction.
 
-2. Restart CSGO
-
-3. CSGO Options:
-	Video Setting: Fullscreen Windowed (for fast window switching)
-	Audio Setting: Play Audio When Game In Background: Yes (so you can hear the casters when it switches out of the game)
-
-4. Open GOTV Stream
-
-5. Open your preferred software to the twitch stream
-
-6. Sync up GoTV and the Twitch Stream using the demo-menu in CSGO (Shift + F2)
-
-###SUPPORTED SOFTWARE TO WATCH TWITCH STREAM
-
-- Chrome
-- Firefox
-- VLC (with Livestreamer, better performance)
+###TO INSTALL/USE:
+ 1. Unzip downloaded folder
+ 2. Set CSGO to windowed fullscreen
+ 3. engine_no_focus_sleep 0 (in-game console, makes it so csgo doesn't slow down when not in focus)
+ 4. snd_mute_losefocus 0 (in-game console, makes it so csgo still plays sound when not in focus)
+ 5. move the file "gamestate_integration_CSGODirector.cfg" to your csgo/cfg folder (where your autoconfig is)
+ 6. Restart game
+ 7. Watch a live match
+ 8. Run the CSGODirector.exe in the downloaded folder
+ 
+ 9. On the top left you can expand the settings panel
+ 10. Press the "'Stream URL" button and enter the twitch channel name (eleague should be default)
+ 11. Press the "Director" radiobutton to start the director. It will hide the twitch stream during rounds and display it during round-end/buytime
+ 12. Use the demoui (SHIFT+F2) to sync up GOTV and the stream
 
 ###USED LIBRARIES
 [CSGSI](https://github.com/rakijah/CSGSI)
 [Newtonsoft JSON](http://www.newtonsoft.com/json)
+[GeckoFX](https://www.nuget.org/packages/GeckoFX/)
